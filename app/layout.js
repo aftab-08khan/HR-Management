@@ -1,0 +1,23 @@
+import './globals.css';
+import './saas-visuals.css';
+import './workflows.css';
+import './organization.css';
+import './stroomx-theme.css';
+import './team-growth.css';
+import './chart-tooltip.css';
+import './notifications.css';
+import './photos.css';
+import './profile-pass.css';
+import './exports.css';
+import './employee-profile.css';
+import './account-profile.css';
+import './login-credentials.css';
+import './record-details.css';
+import './data-charts.css';
+import './skeletons.css';
+import './preferences.css';
+import {PreferencesProvider} from '@/components/saas/preferences';
+import HRApp from '@/components/saas/hr-app';
+import {RouteOutlet} from '@/components/saas/route-outlet';
+export const metadata={title:'PeopleOS — Your people, at the center',description:'A modern workspace for people, culture, and everything HR.'};
+export default function Layout({children}){return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{var t=localStorage.getItem('peopleos-theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light';var p=JSON.parse(localStorage.getItem('peopleos-preferences')||'{}');document.documentElement.lang=p.locale==='ar'?'ar':'en';document.documentElement.dir=p.locale==='ar'?'rtl':'ltr';if(['ember','ocean','violet','teal'].includes(p.accent))document.documentElement.dataset.accent=p.accent;if(['dm-sans','inter','manrope','cairo','tajawal'].includes(p.font))document.documentElement.dataset.font=p.font}catch(e){}`}}/></head><body><PreferencesProvider><HRApp/><RouteOutlet>{children}</RouteOutlet></PreferencesProvider></body></html>}

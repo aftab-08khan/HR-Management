@@ -1,0 +1,164 @@
+/* Color reference: https://stroomxnew.vercel.app/website-3/stroomxweb3.html
+   Original palette: #f7f5f0, #efece4, #15171c, #6b6f7a, #dcd8cc,
+   #ff7a45, #ffb08a, #ffd8c2, #ff4000. Preserve PeopleOS typography/layout.
+   --green names remain compatibility tokens for existing component styles.
+   The darker orange button fill provides readable white button labels. */
+:root{
+  --bg:#f7f5f0;--surface:#fffdf8;--text:#15171c;--muted:#6b6f7a;
+  --border:#dcd8cc;--sidebar:#fffdf8;--banner:#efece4;--hover:#f1eee7;
+  --green:#bf3b10;--green-light:#ffede2;--shadow:0 3px 12px #15171c04;
+  --accent:#ff4000;--accent-mid:#ff7a45;--accent-pale:#ffb08a;--accent-wash:#ffd8c2;
+  --accent-text:#bf3b10;--accent-border:#f2c3ac;--art-border:#dfc6b7;
+  --art-surface:#fff8f0;--art-muted:#8b6758;--art-ink:#5c3325;
+  --semantic-success:#327347;--semantic-success-bg:#eaf3e9;--semantic-success-border:#c8dfc8;
+  --semantic-warning:#8a6523;--semantic-warning-bg:#faf0d9;--semantic-warning-border:#e9d7aa;
+}
+:root.dark{
+  --bg:#13151a;--surface:#1d2026;--text:#f5f1e9;--muted:#acadb5;
+  --border:#37383e;--sidebar:#191b21;--banner:#2d2523;--hover:#27282e;
+  --green:#ffac86;--green-light:#412b24;--shadow:0 3px 12px #00000012;
+  --accent:#ff4000;--accent-mid:#ff986b;--accent-pale:#b56d4e;--accent-wash:#56372a;
+  --accent-text:#ffac86;--accent-border:#754735;--art-border:#654637;
+  --art-surface:#342a26;--art-muted:#c8a897;--art-ink:#f1cbb6;
+  --semantic-success:#a6cfac;--semantic-success-bg:#24382b;--semantic-success-border:#3b5d43;
+  --semantic-warning:#e3c481;--semantic-warning-bg:#3b3324;--semantic-warning-border:#655431;
+}
+button:focus-visible,a:focus-visible{outline-color:var(--accent)}
+::selection{background:var(--accent-wash);color:var(--text)}
+.btn-primary{background:#c63c0f;border-color:#c63c0f;color:#fff;box-shadow:0 2px 2px #84300b0b}
+.btn-primary:hover{background:#ac3008;border-color:#ac3008}
+.dark .btn-primary{background:#c63c0f;border-color:#da5828;color:#fff}
+.dark .btn-primary:hover{background:#af3008;border-color:#e7774f}
+.btn-outline{box-shadow:0 2px 2px #15171c03}
+:is(:root,.dark) .brand-mark span{background:#ff4000}
+:is(:root,.dark) .brand-mark span:nth-child(2){background:#ffb08a}
+:is(:root,.dark) .brand-mark span:nth-child(3){background:#ff7a45}
+:is(:root,.dark) .brand-mark span:nth-child(4){background:#db4a1a}
+:is(:root,.dark) .workspace-icon{background:var(--hover);border-color:var(--border);color:var(--accent-text)}
+:is(:root,.dark) .nav-label,:is(:root,.dark) .nav-item,:is(:root,.dark) .breadcrumb,:is(:root,.dark) .today{color:var(--muted)}
+.nav-item.active{color:var(--accent-text);background:var(--green-light)}
+.nav-item.active:before{background:var(--accent)}
+.nav-item b{background:var(--accent-wash);color:var(--art-ink);border-color:var(--accent-border)}
+.nav-dot,.notification-button>i,.greeting-dot{background:var(--accent)}
+.greeting-dot{background:none;color:var(--accent)}
+:is(:root,.dark) .help-card{background:var(--hover);border-color:var(--border)}
+:is(:root,.dark) .help-icon{color:var(--accent-text)}
+:is(:root,.dark) .eyebrow,:is(:root,.dark) .culture-category{color:var(--muted)}
+.theme-switch .selected{box-shadow:0 1px 4px #15171c0a}
+:is(:root,.dark) .welcome-banner{background:var(--banner);border-color:var(--border)}
+:is(:root,.dark) .banner-pill{background:var(--art-surface);border-color:var(--accent-border);color:var(--art-muted)}
+:is(:root,.dark) .banner-pill>span{background:var(--accent)}
+:is(:root,.dark) .banner-content h2{color:var(--text)}
+:is(:root,.dark) .banner-content p{color:var(--muted)}
+:is(:root,.dark) .banner-content button{color:var(--accent-text)}
+.banner-art{background:radial-gradient(ellipse at 80% 45%,var(--accent-wash) 0%,transparent 70%)}
+.people-spotlight ellipse{fill:var(--accent-mid)}
+:is(:root,.dark) .art-orbit{border-color:var(--art-border)}
+.floating-profile{border-color:var(--surface);box-shadow:0 5px 15px #713b2112}
+.profile-one{background:#ffb08a}.profile-two{background:#e1a58a}.profile-three{background:#f0d4b6}
+.happy-card{background:var(--surface);border-color:var(--border);box-shadow:0 6px 20px #7a3e250c}
+.happy-icon{background:var(--green-light);color:var(--accent-text)}
+.happy-card strong{color:var(--text)}.happy-card div>span{color:var(--muted)}
+.sparkle,.tiny-sparkle,.little-sparkle{color:var(--accent-mid)}.art-dot{background:var(--accent-pale)}
+:is(:root,.dark) .stat-top,:is(:root,.dark) .location,:is(:root,.dark) td{color:var(--muted)}
+:is(:root,.dark) .stat-card>p,:is(:root,.dark) .person div>span,:is(:root,.dark) .culture-copy p{color:var(--muted)}
+:is(:root,.dark) .peach,:is(:root,.dark) .green{background:var(--green-light);color:var(--accent-text)}
+:is(:root,.dark) .blue,:is(:root,.dark) .purple{background:var(--hover);color:var(--muted)}
+:is(:root,.dark) .pink{background:color-mix(in srgb,var(--accent-pale) 20%,var(--surface));color:var(--art-muted)}
+:is(:root,.dark) .yellow{background:var(--banner);color:var(--art-muted)}
+.stat-change{color:var(--accent-text)}
+.info-circle{border-color:var(--border);color:var(--muted)}.mini-select{color:var(--muted)}
+.chart-tabs .selected{color:var(--text)}.chart-legend,.y-axis,.x-axis,.chart-footer,.count-pill{color:var(--muted)}
+.chart-legend i,.department-chart i,.green-dot{background:var(--accent-mid)}
+.chart-footer button,.card-bottom-link,.text-link{color:var(--accent-text)}
+.request-preview p,.request-preview p>span,.request-reason,.approval-actions button,.search-box,.search-box input::placeholder,.search-box>span,th{color:var(--muted)}
+.badge{border-color:var(--border)}
+:is(:root,.dark) .positive,:is(:root,.dark) .status-approved,:is(:root,.dark) .status-complete{color:var(--semantic-success);background:var(--semantic-success-bg);border-color:var(--semantic-success-border)}
+:is(:root,.dark) .warning,:is(:root,.dark) .status-pending,:is(:root,.dark) .status-action-needed{color:var(--semantic-warning);background:var(--semantic-warning-bg);border-color:var(--semantic-warning-border)}
+:is(:root,.dark) .neutral{color:var(--muted);background:var(--hover);border-color:var(--border)}
+:is(:root,.dark) .approval-actions .approve{color:var(--semantic-success);background:var(--semantic-success-bg);border-color:var(--semantic-success-border)}
+.all-caught{color:var(--semantic-success)}.live-status i{background:var(--semantic-success)}
+input[type=checkbox]{border-color:var(--border)}input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+:is(:root,.dark) .culture-illustration{background:var(--banner)}
+:is(:root,.dark) .culture-illustration>div{color:var(--art-muted)}
+:is(:root,.dark) .culture-illustration b{color:var(--art-ink)}
+:is(:root,.dark) .culture-illustration i{border-color:var(--art-border)}
+.culture-copy button,.footer-dot{color:var(--accent-text)}footer{color:var(--muted)}
+.rating{color:var(--accent-text)}.announcement-art{color:var(--art-muted)}.announcement-art span{color:var(--accent-mid)}
+.field{color:var(--muted)}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)}
+.toggle{background:var(--border)}.toggle.on{background:#c63c0f}.modal-overlay{background:#15171c77}.modal-content{box-shadow:0 30px 100px #15171c33}
+.help-content>div{color:var(--accent-text)}.toast{box-shadow:0 6px 30px #15171c1c}.toast>span{color:var(--semantic-success);background:var(--semantic-success-bg)}
+.permission-pill,:is(:root,.dark) .permission-pill{color:var(--accent-text)}
+.demo-context{color:var(--art-muted)}:is(:root,.dark) .workflow-tags>span{color:var(--accent-text)}
+.summary-dot{background:var(--accent-mid)}.summary-dot.yellow{background:#d4a060}.summary-dot.peach{background:var(--accent-pale)}
+.check-tile{color:var(--accent-text)}.check-tile.complete{background:var(--semantic-success-bg);color:var(--semantic-success)}
+.compensation-highlight{border-color:var(--accent-border)}
+/* Login and personal workspace illustrations. */
+:is(:root,.dark) .saas-pill{background:var(--art-surface);border-color:var(--accent-border);color:var(--art-muted)}
+.saas-pill>i{background:var(--accent)}
+:is(:root,.dark) .saas-login-story{background:var(--banner);border-color:var(--border)}
+:is(:root,.dark) .saas-login-story h1,:is(:root,.dark) .saas-personal-welcome h2{color:var(--text)}
+:is(:root,.dark) .saas-login-story h1 em{color:var(--accent-text)}
+:is(:root,.dark) .saas-login-story-top>p,:is(:root,.dark) .saas-personal-welcome p{color:var(--muted)}
+:is(:root,.dark) .saas-art-ring,:is(:root,.dark) .saas-personal-orbit{border-color:var(--art-border)}
+:is(:root,.dark) .saas-login-art-card{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text);box-shadow:0 12px 40px #713b211a!important}
+.saas-art-card-header{border-color:var(--border)}.saas-art-icon{background:var(--green-light);color:var(--accent-text)}
+.saas-art-dots{color:var(--muted)}.saas-art-people>span{background:#ffb08a;color:#5c3325;border-color:var(--surface)}
+.saas-art-people>span:nth-child(2){background:#e7b496}.saas-art-people>span:nth-child(3){background:#ffd8c2}.saas-art-people>span:nth-child(4){background:#e0c6b1}.saas-art-people>span:nth-child(5){background:#d2bab0}
+.saas-art-people>.saas-art-person-more{background:var(--hover);color:var(--muted)}
+.saas-art-visual small{color:var(--muted)}.saas-art-visual strong{color:var(--art-ink)}
+.saas-art-bars i{background:var(--accent-pale)}.saas-art-bars i:nth-child(even){background:var(--accent)}
+.saas-art-bottom{background:var(--hover);border-color:var(--border);color:var(--muted)}.saas-art-bottom i{background:var(--accent)}
+.saas-art-floating small{color:var(--muted)}.saas-art-check{color:var(--accent-text);background:var(--green-light)}
+.saas-art-spark,.saas-art-flower{color:var(--accent-mid)}.saas-art-dot{background:var(--accent-pale)}
+:is(:root,.dark) .saas-login-story-footer>span{color:var(--muted)}
+.saas-login-form-eyebrow{color:var(--muted)}.saas-login-form-eyebrow>span{background:var(--accent)}
+:is(:root,.dark) .saas-role-icon{background:var(--green-light);color:var(--accent-text)}
+:is(:root,.dark) .saas-role-hr{background:var(--banner);color:var(--art-muted)}
+:is(:root,.dark) .saas-role-employee{background:var(--hover);color:var(--muted)}
+.saas-role-choice:hover{border-color:var(--accent-mid);box-shadow:0 3px 12px #d44b130c}
+.saas-role-choice>svg,.saas-login-trust svg{color:var(--accent-text)}
+.saas-login-footer>span:last-child>span{color:var(--accent-mid)}
+.saas-section-mark,.saas-section-label>span:last-child i{background:var(--accent)}
+:is(:root,.dark) .saas-insight-eyebrow{color:var(--muted)}
+.saas-insight-heading>svg,.saas-insight-foot button{color:var(--accent-text)}
+.saas-readiness-queue i{background:var(--accent-mid)}.saas-readiness-queue>div:last-child i{background:var(--muted)}
+:is(:root,.dark) .saas-personal-welcome{background:var(--banner);border-color:var(--border)}
+.saas-personal-tile{background:var(--accent-pale);border-color:var(--surface);color:#fff8f0;box-shadow:0 10px 35px #713b211c}
+.saas-personal-flower{color:var(--accent-mid)}
+.saas-personal-floating{background:var(--surface);box-shadow:0 7px 25px #713b2110}
+.saas-personal-floating>span{background:var(--green-light);color:var(--accent-text)}.saas-personal-floating strong{color:var(--text)}.saas-personal-floating small{color:var(--muted)}
+.saas-personal-pay .card-heading>svg,:is(:root,.dark) .saas-personal-card-link,.saas-personal-empty,.saas-personal-empty button{color:var(--accent-text)}
+:is(:root,.dark) .saas-personal-profile-top>span{background:var(--green-light);color:var(--accent-text)}
+.saas-claim-icon{color:var(--accent-text)}
+.saas-card-glow{--spotlight-color:color-mix(in srgb,var(--accent) 13%,transparent)}
+/* Organization pages and appearance thumbnails retain their light/dark meaning. */
+:is(:root,.dark) .org-feature-art{background:var(--banner);color:var(--art-muted)}
+:is(:root,.dark) .org-art-ring{border-color:var(--art-border)}
+:is(:root,.dark) .org-art-tile{background:var(--art-surface);border-color:var(--accent-border);box-shadow:0 12px 20px #713b2114}
+:is(:root,.dark) .org-art-spark{background:var(--accent-mid);color:#15171c}
+:is(:root,.dark) .org-art-note b{color:var(--art-ink)}.org-section-kicker>span{background:var(--accent)}
+:is(:root,.dark) .org-tone-rose{background:var(--green-light);color:var(--accent-text)}
+:is(:root,.dark) .org-tone-sand{background:var(--banner);color:var(--art-muted)}
+:is(:root,.dark) .org-tone-lavender{background:var(--hover);color:var(--muted)}
+:is(:root,.dark) .org-role-badge,:is(:root,.dark) .org-service-badge.configured,:is(:root,.dark) .org-permissions li svg,:is(:root,.dark) .org-manage-access,:is(:root,.dark) .org-subtle-action,:is(:root,.dark) .org-announcement-meta>span:first-child{color:var(--accent-text)}
+:is(:root,.dark) .org-section-kicker{color:var(--muted)}
+.org-account-avatar>span,.org-theme-choice.selected .org-theme-radio{background:#c63c0f;border-color:var(--surface);color:#fff}
+:is(:root,.dark) .org-theme-preview{background:#efece4;border-color:#dcd8cc}
+:is(:root,.dark) .org-preview-nav{background:#fffdf8}
+:is(:root,.dark) .org-preview-nav i{background:#dcd8cc}
+:is(:root,.dark) .org-preview-nav i:first-child{background:#ff4000}
+:is(:root,.dark) .org-preview-body>span:first-child{background:#bf3b10}
+:is(:root,.dark) .org-preview-body i{background:#ffd8c2}
+:is(:root,.dark) .org-preview-body i:nth-child(2){background:#e9c8b2}
+:is(:root,.dark) .org-preview-body i:nth-child(3){background:#d5d1c8}
+:is(:root,.dark) .org-preview-body>span:last-child{background:#fffdf8}
+:is(:root,.dark) .org-theme-preview.night{background:#13151a;border-color:#37383e}
+:is(:root,.dark) .night .org-preview-nav{background:#1d2026}
+:is(:root,.dark) .night .org-preview-nav i{background:#414149}
+:is(:root,.dark) .night .org-preview-nav i:first-child{background:#ff7a45}
+:is(:root,.dark) .night .org-preview-body>span:first-child{background:#ff986b}
+:is(:root,.dark) .night .org-preview-body i{background:#56372a}
+:is(:root,.dark) .night .org-preview-body i:nth-child(2){background:#45362b}
+:is(:root,.dark) .night .org-preview-body i:nth-child(3){background:#37383e}
+:is(:root,.dark) .night .org-preview-body>span:last-child{background:#1d2026}
