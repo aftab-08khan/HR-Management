@@ -95,6 +95,5 @@ export function LoginScreen({
         <div className="saas-login-trust"><ShieldCheck size={15} /><span>{t("Your workspace, with the right access for every person.")}</span></div>
       </div></section>
     </div>
-    <footer className="saas-login-footer"><span>© {new Date().getFullYear()}{t("PeopleOS")}</span><span>{t("Made for people. Built for better work.")}<span>✦</span></span></footer>
   </div>;
 }
