@@ -255,7 +255,7 @@ Recruitment manages job postings and recorded applicant counts; resume intake an
 
 ### Workspace members and password setup
 
-`WorkspacePanel` in `workflows.js` displays membership, access roles, plan labels, and activity. `HRApp` owns the membership modal and opens `CredentialForm` after an administrator selects password setup for an active member. Provisioning a membership does not create an employee record automatically; link the employee using the same normalized email when personal HR records are needed. Membership email changes require a separate membership rather than rewriting identity in place.
+`WorkspacePanel` in `workflows.js` displays membership, access roles, plan labels, and activity. Creating a membership emails a one-time sign-in setup link; creating an employee profile also provisions an employee membership when one does not exist and emails the same link. Administrators can resend the link from the member's credential actions. Links expire after 30 minutes and resending does not replace an existing password. Membership email changes require a separate membership rather than rewriting identity in place.
 
 ### Notifications
 

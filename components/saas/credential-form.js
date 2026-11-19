@@ -8,7 +8,7 @@ import {usePreferences} from '@/components/saas/preferences';
 export function CredentialForm({member,onSaved,onCancel,emailConfigured=false}){
   const {t}=usePreferences();
   const [busy,setBusy]=useState(false),[error,setError]=useState('');
-  const [mode,setMode]=useState('manual'); // 'manual' | 'email'
+  const [mode,setMode]=useState('email'); // 'manual' | 'email'
   const [emailSent,setEmailSent]=useState(false);
   const pending=useRef(false);
 
@@ -42,30 +42,30 @@ export function CredentialForm({member,onSaved,onCancel,emailConfigured=false}){
   if(emailSent){
     return <div className="credential-email-sent">
       <div className="credential-email-sent-icon"><Check size={28}/></div>
-      <h3>{t('Welcome email sent!')}</h3>
-      <p>{t('{name} will receive their login credentials at {email}.', {name: member.name || member.email, email: member.email})}</p>
-      <p className="credential-email-sent-note"><ShieldCheck size={13}/>{t('A temporary password was generated. They can change it after signing in.')}</p>
+      <h3>{t('Sign-in link sent!')}</h3>
+      <p>{t('{name} will receive a secure sign-in link at {email}.', {name: member.name || member.email, email: member.email})}</p>
+      <p className="credential-email-sent-note"><ShieldCheck size={13}/>{t('The link expires in 30 minutes. Resending it will not change their current password.')}</p>
     </div>;
   }
 
   return <div className="credential-setup-container">
     {/* Mode selector */}
-    {emailConfigured && <div className="credential-mode-selector">
+    <div className="credential-mode-selector">
       <button type="button" className={`credential-mode-tab ${mode==='email'?'active':''}`} onClick={()=>{setMode('email');setError('');}}>
-        <Mail size={15}/>{t('Send welcome email')}
+        <Mail size={15}/>{t('Email sign-in link')}
       </button>
       <button type="button" className={`credential-mode-tab ${mode==='manual'?'active':''}`} onClick={()=>{setMode('manual');setError('');}}>
         <KeyRound size={15}/>{t('Set password manually')}
       </button>
-    </div>}
+    </div>
 
-    {mode==='email' && emailConfigured ? (
+    {mode==='email' ? (
       <div className="credential-email-mode">
         <div className="export-summary">
           <span className="form-icon"><Mail size={23}/></span>
           <div>
             <strong>{member.name||member.email}</strong>
-            <p>{t('Send a welcome email with auto-generated login credentials to this member.')}</p>
+            <p>{t('Send a secure link so this member can set or reset their password.')}</p>
           </div>
         </div>
         <div className="credential-email-preview">
@@ -75,16 +75,16 @@ export function CredentialForm({member,onSaved,onCancel,emailConfigured=false}){
           </div>
           <div className="credential-email-preview-body">
             <p><strong>{t('To:')}</strong> {member.email}</p>
-            <p><strong>{t('Subject:')}</strong> {t('Welcome to your workspace — Your PeopleOS Login')}</p>
-            <p className="credential-email-preview-content">{t('The email will include their email address, a temporary password, and a link to sign in.')}</p>
+            <p><strong>{t('Subject:')}</strong> {t('Your secure PeopleOS sign-in link')}</p>
+            <p className="credential-email-preview-content">{t('The email will include a one-time link to set their password and sign in.')}</p>
           </div>
         </div>
-        <p className="export-privacy"><ShieldCheck size={15}/>{t('A secure temporary password will be generated automatically.')}</p>
+        <p className="export-privacy"><ShieldCheck size={15}/>{t('The link expires in 30 minutes and can be resent at any time.')}</p>
         {error&&<p className="form-error" role="alert">{t(error)}</p>}
         <div className="modal-actions">
           <Button type="button" variant="outline" disabled={busy} onClick={onCancel}>{t('Cancel')}</Button>
           <Button disabled={busy} onClick={sendWelcome}>
-            {busy?<LoaderCircle size={15} className="login-credentials-spinner"/>:<Mail size={15}/>} {t(busy?'Sending…':'Send welcome email')}
+            {busy?<LoaderCircle size={15} className="login-credentials-spinner"/>:<Mail size={15}/>} {t(busy?'Sending…':'Send sign-in link')}
           </Button>
         </div>
       </div>

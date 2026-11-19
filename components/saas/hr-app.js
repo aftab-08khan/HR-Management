@@ -1068,7 +1068,35 @@ export default function HRApp({ children }) {
     };
     if (modal.type === "request" && !record.status) record.status = "Pending";
     if (modal.type === "employee" && !record.color) record.color = "purple";
-    save(resource, record).then((ok) => ok && setModal(null));
+    const creatingUser = cloud && !modal.record?.id && ["membership", "employee"].includes(modal.type);
+    save(resource, record).then(async (ok) => {
+      if (!ok) return;
+      setModal(null);
+      if (!creatingUser) return;
+      let memberEmail = record.email;
+      if (modal.type === "employee") {
+        const existingMember = data.memberships.find((member) => member.email?.toLowerCase() === memberEmail?.toLowerCase());
+        if (!existingMember) {
+          try {
+            const response = await fetch("/api/memberships", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({email: memberEmail, name: record.name, role: "employee", status: "Active"})});
+            const result = await response.json();
+            if (!response.ok) throw Error(result.error || "Could not create sign-in account");
+            setRefreshKey((key) => key + 1);
+          } catch (error) {
+            setToast(`Employee saved, but sign-in access was not created: ${error.message}`);
+            return;
+          }
+        }
+      }
+      try {
+        const response = await fetch("/api/credentials/send-welcome", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({email: memberEmail})});
+        const result = await response.json();
+        if (!response.ok) throw Error(result.error || "Email could not be sent");
+        setToast(`Sign-in link emailed to ${memberEmail}`);
+      } catch (error) {
+        setToast(`User saved, but the sign-in email could not be sent: ${error.message}`);
+      }
+    });
   }
   function field(
     label,
@@ -1691,8 +1719,10 @@ export default function HRApp({ children }) {
                 employees={data.employees}
                 onBack={backToList}
                 onSetPassword={
-                  cloud && isOwner
-                    ? (record) => setModal({ type: "credentials", record })
+                  isOwner
+                    ? (record) => cloud
+                      ? setModal({ type: "credentials", record })
+                      : setToast("Demo mode cannot send real email. Sign in to your connected workspace to send this link.")
                     : undefined
                 }
                 onEdit={(record) =>

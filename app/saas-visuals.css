@@ -1942,3 +1942,19 @@ footer.saas-login-footer {
   color: #8a9f7c;
   flex-shrink: 0;
 }
+.saas-login-body {
+  grid-template-columns: minmax(0, 560px);
+  justify-content: center;
+  width: min(92%, 560px);
+  min-height: 0;
+  margin: 24px auto 40px;
+}
+.saas-login-story {
+  display: none;
+}
+.saas-login-form {
+  padding: 24px 12px;
+}
+.saas-login-form-inner {
+  max-width: 460px;
+}

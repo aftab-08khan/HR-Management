@@ -3,14 +3,15 @@ import {authOptions, resolveMembership} from '@/lib/auth';
 import {database} from '@/lib/mongodb';
 import {validIdentity, normalizeEmail} from '@/lib/access';
 import {validRequestOrigin} from '@/lib/request-origin';
-import {CredentialSetupError, setWorkspacePassword, validCredentialEmail} from '@/lib/credentials';
-import {sendWelcomeEmail, generateTempPassword, isEmailConfigured} from '@/lib/email';
+import {createHash, randomBytes} from 'node:crypto';
+import {validCredentialEmail} from '@/lib/credentials';
+import {sendPasswordResetEmail, isEmailConfigured} from '@/lib/email';
 
 const respond = (body, status = 200) => Response.json(body, {status, headers: {'Cache-Control': 'private, no-store'}});
 
 /**
  * POST /api/credentials/send-welcome
- * Admin-only: sets a temporary password for a member and emails their credentials.
+ * Admin-only: emails a short-lived sign-in setup link without changing the member's password.
  * Body: { email: string }
  */
 export async function POST(req) {
@@ -47,28 +48,20 @@ export async function POST(req) {
     const targetMember = await db.collection('memberships').findOne({workspaceId: member.workspaceId, email, status: 'Active'});
     if (!targetMember) return respond({error: 'An active member in this workspace is required'}, 404);
 
-    // Generate a temporary password
-    const tempPassword = generateTempPassword(16);
-
-    // Set the password in the credentials collection
-    const actor = {...session.user, role: member.role, workspaceId: member.workspaceId};
-    await setWorkspacePassword(db, actor, {email, password: tempPassword});
-
-    // Find the workspace name
+    // Create a one-time link. Resending never changes an existing password.
     const workspace = await db.collection('workspaces').findOne({id: member.workspaceId});
-
-    // Send the welcome email
-    const result = await sendWelcomeEmail({
-      recipientEmail: email,
-      recipientName: targetMember.name || email,
-      password: tempPassword,
-      workspaceName: workspace?.name || member.workspaceName || 'Your workspace',
-      workspaceId: member.workspaceId,
-    });
-
-    return respond({ok: true, email, emailSent: true, emailId: result.emailId});
+    const rawToken = randomBytes(32).toString('base64url');
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 30 * 60 * 1000);
+    await db.collection('passwordResetTokens').deleteMany({email, workspaceId: member.workspaceId});
+    await db.collection('passwordResetTokens').insertOne({tokenHash, email, workspaceId: member.workspaceId, createdAt: now, expiresAt});
+    const baseUrl = process.env.NEXTAUTH_URL || new URL(req.url).origin;
+    const setupUrl = new URL('/reset-password', baseUrl);
+    setupUrl.hash = `token=${rawToken}`;
+    await sendPasswordResetEmail({recipientEmail: email, recipientName: targetMember.name || email, workspaceName: workspace?.name || member.workspaceName || 'Your workspace', resetUrl: setupUrl.href});
+    return respond({ok: true, email, emailSent: true});
   } catch (error) {
-    if (error instanceof CredentialSetupError) return respond({error: error.message}, error.status);
     console.error('Send welcome email failed:', error.message);
     return respond({error: error.message || 'Unable to send welcome email'}, 503);
   }

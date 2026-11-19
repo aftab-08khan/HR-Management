@@ -35,11 +35,15 @@ function readPassword(prompt) {
 async function main() {
   if (process.argv.includes('--help')) {
     console.log('Usage: npm run user:create -- --workspace-id acme --workspace-name "Acme" --email admin@example.com --name "Admin" --role admin');
+    console.log('To repair a workspace that already has members but no active administrator, add --repair-admin to an explicit --role admin command.');
     console.log('Password is read securely from the terminal, or from PEOPLEOS_INITIAL_PASSWORD. Never pass it as a command-line argument.');
     return;
   }
+  const repairAdmin = process.argv.includes('--repair-admin');
+  if (repairAdmin && option('--role', 'employee') !== 'admin') throw new Error('--repair-admin can only be used together with --role admin');
   const allowedOptions = ['--workspace-id', '--workspace-name', '--email', '--name', '--role'];
-  for (let index = 2; index < process.argv.length; index += 2) if (!allowedOptions.includes(process.argv[index]) || !process.argv[index + 1] || process.argv[index + 1].startsWith('--')) throw new Error('Unknown or incomplete option. Use --help.');
+  const args = process.argv.slice(2).filter(value => value !== '--repair-admin');
+  for (let index = 0; index < args.length; index += 2) if (!allowedOptions.includes(args[index]) || !args[index + 1] || args[index + 1].startsWith('--')) throw new Error('Unknown or incomplete option. Use --help.');
   const workspaceId = option('--workspace-id', process.env.WORKSPACE_ID)?.trim();
   const workspaceName = option('--workspace-name', process.env.WORKSPACE_NAME || workspaceId)?.trim();
   const email = normalizeEmail(option('--email', (process.env.ADMIN_EMAILS || '').split(',')[0]));
@@ -65,7 +69,8 @@ async function main() {
     const existing = await members.findOne({workspaceId, email});
     if (existing?.status !== undefined && existing.status !== 'Active') throw new Error('This membership is suspended; the CLI will not reactivate it');
     if (existing && existing.role !== role) throw new Error('The existing role differs. Change roles through Workspace & access before resetting this password');
-    if (!administrator && (memberCount > 0 || role !== 'admin')) throw new Error('The first member must be an administrator. Existing memberships without an active administrator require explicit repair');
+    if (!administrator && role !== 'admin') throw new Error('The first member must be an administrator. Create or repair the workspace administrator before provisioning other users');
+    if (!administrator && memberCount > 0 && !repairAdmin) throw new Error('This workspace already has members but no active administrator. Use --repair-admin with an explicit --role admin command to repair it');
     const now = new Date().toISOString();
     await db.collection('workspaces').updateOne({id: workspaceId}, {$setOnInsert: {id: workspaceId, name: workspaceName, plan: 'Business', createdAt: now}}, {upsert: true});
     const id = crypto.randomUUID();

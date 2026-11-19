@@ -41,7 +41,11 @@ export async function POST(req) {
     resetUrl.hash = `token=${rawToken}`;
     if (isEmailConfigured()) {
       try {await sendPasswordResetEmail({recipientEmail: email, recipientName: membership.name, workspaceName: workspace.name, resetUrl: resetUrl.href});}
-      catch (error) {console.error('Password reset email failed:', error.message);}
+      catch (error) {
+        console.error('Password reset email failed:', error.message);
+        await db.collection('passwordResetTokens').deleteOne({tokenHash});
+        return respond({error: 'The reset email could not be delivered. Check the email service configuration and try again.'}, 503);
+      }
       return respond(genericResponse);
     }
     if (process.env.NODE_ENV !== 'production') return respond({...genericResponse, developmentResetUrl: resetUrl.href});

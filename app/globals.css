@@ -15,15 +15,13 @@
 }
 * {
   box-sizing: border-box;
-  font-size: 12px;
-
 }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: "DM Sans", sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
 }
 button,
@@ -762,8 +760,8 @@ h1 {
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 9px;
-  box-shadow: var(--shadow);
+  border-radius: 12px;
+  box-shadow: none;
   overflow: hidden;
 }
 .dashboard-middle {
