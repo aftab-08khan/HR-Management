@@ -80,6 +80,7 @@ import {
 } from "@/lib/demo";
 import {
   LoginScreen,
+  PasswordResetScreen,
   DashboardSkeleton,
   RoleDashboard,
   WorkforceInsights,
@@ -1113,6 +1114,7 @@ export default function HRApp({ children }) {
       </label>
     );
   }
+  if (pathname === "/reset-password") return <PasswordResetScreen />;
   if (!route) return null;
   if (!ready || !authReady)
     return (
@@ -1439,7 +1441,7 @@ export default function HRApp({ children }) {
           </div>
         </header>
         <main>
-          <div className="workspace-context">
+          {/* <div className="workspace-context">
             <span>
               <Building2 size={12} />
               {cloud ? workspace.name : settings.company}
@@ -1457,10 +1459,10 @@ export default function HRApp({ children }) {
               <LogOut size={12} />
               {t(cloud ? "Sign out" : "Switch demo role")}
             </button>
-          </div>
+          </div> */}
           <div className="page-heading">
             <div>
-              <div className="eyebrow">{t("YOUR PEOPLE. YOUR WORKPLACE.")}</div>
+              {/* <div className="eyebrow">{t("YOUR PEOPLE. YOUR WORKPLACE.")}</div> */}
               <h1>
                 {isDetail ? (
                   detailTitle

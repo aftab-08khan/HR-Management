@@ -1,7 +1,7 @@
 'use client';
 
 import { usePreferences } from "@/components/saas/preferences";
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { ArrowRight, ArrowUpRight, Building2, Check, Eye, EyeOff, Heart, KeyRound, LoaderCircle, LockKeyhole, Mail, Moon, ShieldCheck, Sun, UserRound, Users } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/saas/preferences';
 import { AnimatedCard } from '@/components/ui/spotlight-card';
@@ -48,6 +48,10 @@ export function LoginScreen({
   const [selectedDemo, setSelectedDemo] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetMessage, setResetMessage] = useState('');
+  const [resetError, setResetError] = useState('');
+  const [developmentResetUrl, setDevelopmentResetUrl] = useState('');
   const emailInput = useRef(null);
   const submitLock = useRef(false);
   const busy = loading || submitting;
@@ -60,6 +64,18 @@ export function LoginScreen({
     try {await onCredentials({email: email.trim().toLowerCase(), password});}
     catch {setSubmitError('Unable to sign in. Check your email and password and try again.');}
     finally {submitLock.current = false; setSubmitting(false);}
+  }
+  async function requestPasswordReset() {
+    if (!email.trim() || resetBusy) {setResetError('Enter your email address first.'); return;}
+    setResetBusy(true); setResetError(''); setResetMessage(''); setDevelopmentResetUrl('');
+    try {
+      const response = await fetch('/api/credentials/forgot-password', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email: email.trim().toLowerCase()})});
+      const result = await response.json();
+      if (!response.ok) throw Error(result.error || 'Password reset is unavailable right now.');
+      setResetMessage(result.message || 'If an active account matches that email, we will send a password reset link.');
+      setDevelopmentResetUrl(result.developmentResetUrl || '');
+    } catch (cause) {setResetError(cause.message || 'Password reset is unavailable right now.');}
+    finally {setResetBusy(false);}
   }
   function chooseDemo(role) {
     setEmail(role.email); setPassword(DEMO_PASSWORD); setSelectedDemo(role.id); setShowPassword(false); setSubmitError('');
@@ -90,10 +106,37 @@ export function LoginScreen({
           <button type="submit" className="btn btn-primary login-credentials-submit" disabled={busy || !canUseCredentials}>{busy ? <LoaderCircle size={16} className="login-credentials-spinner"/> : <KeyRound size={16}/>}<span>{t(busy ? 'Signing in…' : 'Sign in')}</span>{!busy && <ArrowRight size={16}/>}</button>
           {busy && <span className="saas-visually-hidden" role="status">{t('Signing in…')}</span>}
         </form>
+        {credentialsEnabled && <button type="button" className="login-forgot-link" onClick={requestPasswordReset} disabled={resetBusy}>{resetBusy ? t('Sending reset link…') : t('Forgot password?')}</button>}
+        {resetError && <div className="saas-login-error" role="alert">{t(resetError)}</div>}
+        {resetMessage && <div className="login-reset-message" role="status">{t(resetMessage)}{developmentResetUrl && <a href={developmentResetUrl}>{t('Open local reset link')}</a>}</div>}
         <p className="login-credentials-note" id="credentials-note"><ShieldCheck size={12}/>{t(credentialsEnabled ? 'Your account opens the workspace and role assigned to you.' : demoEnabled ? 'Choose a demo account below, then select Sign in.' : 'Email sign-in is not configured for this application.')}</p>
         {demoEnabled && <section className="login-demo-credentials" aria-label={t('Demo credentials')}><div className="login-demo-heading"><span><KeyRound size={14}/>{t('Try a demo account')}</span><small>{t('3 roles. One workspace.')}</small></div><div className="login-demo-password"><span>{t('Demo password')}</span><code dir="ltr">{DEMO_PASSWORD}</code></div><div className="login-demo-accounts">{roles.map(role => <button type="button" className={`login-demo-account ${selectedDemo === role.id ? 'selected' : ''}`} key={role.id} onClick={() => chooseDemo(role)} disabled={busy} aria-label={t('Fill {role} demo credentials', {role: t(role.title)})} aria-pressed={selectedDemo === role.id}><span className={`saas-role-icon saas-role-${role.id}`}><role.Icon size={16}/></span><span><strong>{t(role.title)}</strong><small dir="ltr">{role.email}</small></span><span className="login-demo-fill">{selectedDemo === role.id ? <Check size={14}/> : <ArrowUpRight size={14}/>}</span></button>)}</div><p>{t('Selecting an account fills the form. Sign in to open its demo workspace.')}</p><span className="saas-visually-hidden" role="status">{selectedDemo ? t('Demo credentials filled. Select Sign in to continue.') : ''}</span></section>}
         <div className="saas-login-trust"><ShieldCheck size={15} /><span>{t("Your workspace, with the right access for every person.")}</span></div>
       </div></section>
     </div>
   </div>;
+}
+
+export function PasswordResetScreen() {
+  const {t} = usePreferences();
+  const [token, setToken] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmation, setConfirmation] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  useEffect(() => {setToken(new URLSearchParams(window.location.hash.slice(1)).get('token') || '');}, []);
+  async function submit(event) {
+    event.preventDefault(); setError(''); setMessage('');
+    if (password !== confirmation) {setError('Passwords do not match.'); return;}
+    setBusy(true);
+    try {
+      const response = await fetch('/api/credentials/reset-password', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({token, password})});
+      const result = await response.json();
+      if (!response.ok) throw Error(result.error || 'Password reset failed.');
+      setMessage(result.message || 'Password updated. You can now sign in.');
+    } catch (cause) {setError(cause.message || 'Password reset failed.');}
+    finally {setBusy(false);}
+  }
+  return <main className="password-reset-page"><section className="password-reset-card"><a className="saas-login-brand" href="/" aria-label={t('PeopleOS home')}>people<span>os</span><sup>®</sup></a><h1>{t('Choose a new password')}</h1><p>{t('Use a password between 12 and 128 characters.')}</p>{!token && <div className="saas-login-error" role="alert">{t('This password reset link is missing or invalid. Request a new link from the sign-in page.')}</div>}{error && <div className="saas-login-error" role="alert">{t(error)}</div>}{message ? <div className="login-reset-message" role="status">{t(message)}<a href="/">{t('Return to sign in')}</a></div> : <form className="login-credentials-form" onSubmit={submit}><label htmlFor="reset-password">{t('New password')}</label><input id="reset-password" className="password-reset-input" type="password" autoComplete="new-password" minLength={12} maxLength={128} required value={password} onChange={event => setPassword(event.target.value)} disabled={!token || busy}/><label htmlFor="reset-confirmation">{t('Confirm new password')}</label><input id="reset-confirmation" className="password-reset-input" type="password" autoComplete="new-password" minLength={12} maxLength={128} required value={confirmation} onChange={event => setConfirmation(event.target.value)} disabled={!token || busy}/><button className="btn btn-primary login-credentials-submit" type="submit" disabled={!token || busy}>{busy ? t('Saving…') : t('Update password')}</button></form>}</section></main>;
 }
